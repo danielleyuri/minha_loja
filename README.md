@@ -1,5 +1,5 @@
 ********************************************************
 
-Sistema e-commerce simples na linguagem Python e Flask.
+      Sistema e-commerce simples na linguagem Python e Flask.
 
 ********************************************************
