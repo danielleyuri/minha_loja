@@ -1,0 +1,7 @@
+instance
+static
+venv 
+requirement.txt
+__pycache__
+errado.html
+templates
