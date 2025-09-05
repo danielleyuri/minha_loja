@@ -1,4 +1,4 @@
-from loja.admin.rotas import categoria, marca
+from loja.admin.rotas import categorias, marcas
 from flask import redirect, render_template, url_for, flash, request, session,current_app 
 from .forms import Addprodutos
 from loja import db, app, photos
@@ -6,13 +6,29 @@ from .models import Marca, Categoria, Addproduto
 import secrets, os
 
 
+def marcas():
+        marcas = Marca.query.join(Addproduto, (Marca.id == Addproduto.marca_id)).all()
+        return marcas
+
+
+def categorias():
+        categorias = Marca.query.join(Addproduto, (Categoria.id == Addproduto.marca_id)).all()
+        return categorias
+
+
+
 @app.route('/')
 def home():
     pagina = request.args.get('pagina',1, type=int)
     produtos = Addproduto.query.filter(Addproduto.stock > 0).order_by(Addproduto.id.desc()).paginate(page=pagina, per_page=3)
-    marcas = Marca.query.join(Addproduto, (Marca.id == Addproduto.marca_id)).all()
-    categorias = Categoria.query.join(Addproduto, (Categoria.id == Addproduto.categoria_id)).all()
     return render_template('produtos/index.html', produtos=produtos, marcas=marcas, categorias=categorias)
+
+
+@app.route('/pesquisar')
+def pesquisar():
+     searchword = request.args.get('q')
+     produtos=Addproduto.query.msearch(searchword, fields=['name', 'desc'], limit=3)
+     return render_template('produtos/pesquisar.html', produtos=produtos)
 
 
 
@@ -21,17 +37,14 @@ def get_marca(id):
     get_m = Marca.query.filter_by(id=id).first_or_404()
     pagina = request.args.get('pagina',1, type=int)
     marca = Addproduto.query.filter_by(marca=get_m).paginate(page=pagina, per_page=3)
-    marcas = Marca.query.join(Addproduto, (Marca.id == Addproduto.marca_id)).all()
-    categorias = Categoria.query.join(Addproduto, (Categoria.id == Addproduto.categoria_id)).all()
-    return render_template('/produtos/index.html', marca=marca, marcas=marcas, categorias=categorias, get_m=get_m)
+    return render_template('/produtos/index.html', marca=marca, marcas=marcas(), categorias=categorias(), get_m=get_m)
 
 
 @app.route('/produto/<int:id>')
 def pagina_unica(id): 
     produto = Addproduto.query.get_or_404(id)
-    marcas = Marca.query.join(Addproduto, (Marca.id == Addproduto.marca_id)).all()
-    categorias = Categoria.query.join(Addproduto, (Categoria.id == Addproduto.categoria_id)).all()
-    return render_template('/produtos/pagina_unica.html', produto=produto, marcas=marcas, categorias=categorias)
+
+    return render_template('/produtos/pagina_unica.html', produto=produto, marcas=marcas(), categorias=categorias())
 
 
 
@@ -40,9 +53,8 @@ def get_categoria(id):
     pagina = request.args.get('pagina',1, type=int)
     get_cat = Categoria.query.filter_by(id=id).first_or_404()
     get_cat_prod = Addproduto.query.filter_by(categoria=get_cat).paginate(page=pagina, per_page=3)
-    marcas = Marca.query.join(Addproduto, (Marca.id == Addproduto.marca_id)).all()
-    categorias = Categoria.query.join(Addproduto, (Categoria.id == Addproduto.categoria_id)).all()
-    return render_template('/produtos/index.html',get_cat_prod=get_cat_prod , categorias=categorias, marcas=marcas, get_cat=get_cat)
+
+    return render_template('/produtos/index.html',get_cat_prod=get_cat_prod , categorias=categorias(), marcas=marcas(), get_cat=get_cat)
 
 
 
