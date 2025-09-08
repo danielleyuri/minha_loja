@@ -24,15 +24,18 @@ def home():
     return render_template('produtos/index.html', produtos=produtos, marcas=marcas, categorias=categorias)
 
 
+
 @app.route('/search', methods=['GET','POST'])
 def search():
      
-     if request.method=="POST":
+    if request.method=="POST":
         form= request.form
         search_value = form['search_string']
         search="%{0}%".format(search_value)
-        produtos = Addproduto.query.filter(Addproduto.name.like)
-
+        produtos = Addproduto.query.filter(Addproduto.name.like(search)).all()
+        return render_template('pesquisar.html', produtos=produtos, marcas=marcas, categorias=categorias)
+    else:
+        return redirect('/')
 
 
 @app.route('/pesquisar')

@@ -30,3 +30,4 @@ search.init_app(app)
 from loja.admin import rotas
 from loja.produtos import rotas
 from loja.carrinho import carrinhos
+from loja.clientes import rotas
