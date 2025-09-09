@@ -1,6 +1,7 @@
-from wtforms import Form, SubmitField, IntegerField, FloatField, StringField, TextAreaField, validators, PasswordField
+from wtforms import Form, SubmitField, IntegerField, FloatField, StringField, TextAreaField, validators, PasswordField,ValidationError
 from flask_wtf.file import FileField,FileRequired, FileAllowed
-
+from flask_wtf import FlaskForm
+from .model import Cadastrar 
 
 
 
@@ -21,3 +22,12 @@ class CadastroClienteForm(Form):
 
 
     submit = SubmitField('Cadastrar')
+
+    def validate_username(self, username):
+        if Cadastrar.query.filter_by(username=username.data).first():
+            raise ValidationError("ESTE USUARIO JA CADASTRADO")
+
+
+    def validate_email(self, email):
+        if Cadastrar.query.filter_by(email=email.data).first():
+            raise ValidationError("ESTE USUARIO JA CADASTRADO")
