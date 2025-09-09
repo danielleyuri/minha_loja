@@ -1,16 +1,16 @@
 from wtforms import Form, SubmitField, IntegerField, FloatField, StringField, TextAreaField, validators, PasswordField,ValidationError
 from flask_wtf.file import FileField,FileRequired, FileAllowed
 from flask_wtf import FlaskForm
-from .model import Cadastrar 
+from .models import Cadastrar
 
 
 
 
-class CadastroClienteForm(Form):
+class CadastroClienteForm(FlaskForm):
     name = StringField('Nome: ')
     username = StringField('Usuario: ',[validators.DataRequired()])
     email= StringField('Email: ', [validators.DataRequired()])
-    password = PasswordField,('Senha: ',[validators.DataRequired()])
+    password = PasswordField,('Senha: ',[validators.DataRequired(), validators.EqualTo('confirm', message='Confirmar sua Senha')])
     confirm = PasswordField('Digite novamente sua senha: ',[validators.DataRequired()])
     country = StringField('País: ',[validators.DataRequired()])
     state = StringField('Estado: ',[validators.DataRequired()])
@@ -31,3 +31,11 @@ class CadastroClienteForm(Form):
     def validate_email(self, email):
         if Cadastrar.query.filter_by(email=email.data).first():
             raise ValidationError("ESTE USUARIO JA CADASTRADO")
+        
+
+
+class ClienteLoginForm(FlaskForm):
+    email= StringField('Email: ', [validators.DataRequired()])
+    password = PasswordField,('Senha: ',[validators.DataRequired()])
+
+

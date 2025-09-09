@@ -7,7 +7,7 @@ class RegistrationForm(Form):
     email = StringField('Email', [validators.Length(min=6, max=35)])
     password = PasswordField('Senha', [
         validators.DataRequired(),
-        validators.EqualTo('confirm', message='Confirmar sua Senha')
+        validators.EqualTo
     ])
     confirm = PasswordField('Digite a Senha Novamente')
 

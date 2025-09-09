@@ -93,7 +93,7 @@ def updateCarro(code):
 
 @app.route('/deleteitem/<int:id>')
 def deleteitem(id):
-    if 'LojainCarrrinho' not in session or len(session['LojainCarrinho'])<=0:
+    if 'LojainCarrrinho' not in session or len( session['LojainCarrinho'])<=0:
         return redirect(url_for('home'))
     
     try:
